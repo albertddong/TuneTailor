@@ -78,7 +78,7 @@ def get_recommended_songs_by_genre(token, genre):
         return None
 
 
-# this is just for testing
-tracks = get_recommended_songs_by_genre(token, "classical")
-for track in tracks:
-    print(track["name"])
+# # this is just for testing
+# tracks = get_recommended_songs_by_genre(token, "classical")
+# for track in tracks:
+#     print(track["name"])
