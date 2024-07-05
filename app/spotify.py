@@ -77,6 +77,28 @@ def get_recommended_songs_by_genre(token, genre):
         print("Unsupported genre...")
         return None
 
+def get_song_characteristics(token, track_id):
+    url = f"https://api.spotify.com/v1/audio-features/{track_id}"
+    headers = get_auth_header(token)
+    result = get(url, headers=headers)
+    return json.loads(result.content)
+
+def filter_songs_by_tempo(songs, target_tempo, tolerance=5):
+    return [song for song in songs if abs(song['tempo'] - target_tempo) <= tolerance]
+
+def get_recommended_songs_by_genre_and_tempo(token, genre, target_tempo):
+    if genre in all_genres:
+        url = "https://api.spotify.com/v1/recommendations"
+        headers = get_auth_header(token)
+        query = f"?limit=50&seed_genres={genre}&min_tempo={target_tempo}&max_tempo={target_tempo+10}"
+
+        query_url = url + query 
+        result = get(query_url, headers=headers)
+        tracks = json.loads(result.content).get("tracks", [])
+        return tracks
+    else:
+        print("Unsupported genre...")
+        return None
 
 # # this is just for testing
 # tracks = get_recommended_songs_by_genre(token, "classical")

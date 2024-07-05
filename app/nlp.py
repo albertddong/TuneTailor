@@ -1,12 +1,8 @@
 from transformers import pipeline
 
-# This is a placeholder for actual NLP processing
-# For simplicity, we are using a sentiment-analysis model from transformers
-
 classifier = pipeline('sentiment-analysis')
 
-def parse_user_input(input_text):
-    # Simplified example: This would be more complex with actual NLP models or rule-based processing
+def detect_mood(input_text):
     result = classifier(input_text)
     sentiment = result[0]['label']
     if sentiment == 'POSITIVE':
@@ -15,3 +11,17 @@ def parse_user_input(input_text):
         return 'sad'
     else:
         return 'neutral'
+
+def detect_tempo(input_text):
+    words = input_text.split()
+    tempo_words = {
+        "slow": 60,
+        "relaxing": 70,
+        "medium": 100,
+        "fast": 120,
+        "upbeat": 140
+    }
+    for word in words:
+        if word.lower() in tempo_words:
+            return tempo_words[word.lower()]
+    return None
