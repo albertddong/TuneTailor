@@ -18,9 +18,9 @@ def get_playlist_for_user_input(input_text):
                 genre = "blues"
         
         token = get_token()
-        tracks = get_recommended_songs_by_genre_and_tempo(token, genre, tempo) if tempo else []
-
+        tracks = get_recommended_songs_by_genre_and_tempo(token, genre, tempo) if tempo else get_recommended_songs_by_genre_and_tempo(token, genre, 100)
         playlist = [{"name": track["name"], "artist": track["artists"][0]["name"]} for track in tracks]
+        
         return playlist
     
     except Exception as e:
