@@ -1,0 +1,97 @@
+.App {
+  text-align: center;
+  font-family: Arial, sans-serif;
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+
+  background: #1E1E1E;
+}
+
+.App-header {
+  padding: 20px;
+  color: white;
+  position: absolute;
+  width: 1072px;
+  height: 263px;
+  left: 111px;
+  top: 81px;
+  font-family: 'Arial';
+  font-style: normal;
+  font-weight: 300;
+  font-size: 50px;
+  line-height: 100%;
+}
+
+.content {
+  padding: 20px;
+}
+
+.options {
+  margin-bottom: 20px;
+}
+
+.manual-selection label,
+.ai-selection {
+  display: block;
+  margin: 10px 0;
+}
+
+select {
+  margin-left: 10px;
+  padding: 5px;
+}
+
+.generate button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.generate img {
+  position: absolute;
+  width: 161px;
+  height: 161px;
+  left: 880px;
+  top: 458px;
+}
+
+
+.line-border .v1 {
+  position: absolute;
+  border: 3px solid #1ED760;
+  width: 0px;
+  height: 207px;
+  left: 960px;
+  top: 242px;
+}
+
+.line-border .v2 {
+  position: absolute;
+  border: 3px solid #1ED760;
+  width: 0px;
+  height: 521px;
+  left: 960px;
+  top: 630px;
+}
+
+.line-border .v3 {
+  position: absolute;
+  border: 3px solid #1ED760;
+  width: 0px;
+  height: 282px;
+  left: 960px;
+  top: -107px;
+}
+
+.line-border .v4 {
+  position: absolute;
+  width: 60.86px;
+  height: 56.81px;
+  left: 1046.8px;
+  top: 489.42px;
+
+  border: 5px solid #1ED760;
+}
+
+/* Frame 1 */
