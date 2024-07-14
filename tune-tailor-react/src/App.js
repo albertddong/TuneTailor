@@ -4,16 +4,49 @@ import Title from "./components/Title";
 import Instructions from "./components/Instructions";
 import GenerateButton from "./components/GenerateButton";
 
+async function getPlaylist(userInput) {
+  const url = 'http://127.0.0.1:5000/getPlaylist';
+  const headers = new Headers({
+    'Content-Type': 'application/json'
+  });
+  const data = {
+    'input': userInput
+  };
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+      const playlist = await response.json();
+      displayPlaylist(playlist);
+    } else {
+      console.error(`Error: ${response.status} - ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+function displayPlaylist(playlist) {
+  const playlistContainer = document.getElementById('playlist');
+  playlistContainer.innerHTML = '';
+  playlistContainer.innerText = JSON.stringify(playlist);
+
+}
+
 function App() {
   const [mood, setMood] = useState("");
   const [tempo, setTempo] = useState("");
-  const [title, setTitle] = useState("TuneTailor AI");
 
   const handleMoodChange = (e) => setMood(e.target.value);
   const handleTempoChange = (e) => setTempo(e.target.value);
   const handleGeneratePlaylist = () => {
     console.log("Generate playlist with mood:", mood, "and tempo:", tempo);
-    setTitle("Poop");
+    getPlaylist(mood.concat(", ", tempo));
   };
 
   return (
@@ -324,7 +357,7 @@ function App() {
         </svg>
       </div>
       <div className="left-side">
-        <Title title={title} />
+        <Title title={"TuneTailor AI"} />
         <Instructions
           mood={mood}
           tempo={tempo}
@@ -340,6 +373,7 @@ function App() {
         </div>
       </div>
       <GenerateButton handleGeneratePlaylist={handleGeneratePlaylist} />
+      <div id="playlist">Placeholder to output generated playlist</div>
     </div>
   );
 }
