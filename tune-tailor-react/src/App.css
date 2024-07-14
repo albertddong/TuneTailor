@@ -1,11 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 .App {
-  text-align: center;
-  font-family: Arial, sans-serif;
+  /* font-family: Arial, sans-serif; */
+  font-family: "Inter", sans-serif;
   position: relative;
-  width: 1920px;
-  height: 1080px;
-
-  background: #1E1E1E;
+  background: #1e1e1e;
 }
 
 .App-header {
@@ -16,16 +14,16 @@
   height: 263px;
   left: 111px;
   top: 81px;
-  font-family: 'Arial';
+  font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 300;
   font-size: 50px;
   line-height: 100%;
 }
 
-.content {
+/* .content {
   padding: 20px;
-}
+} */
 
 .options {
   margin-bottom: 20px;
@@ -37,10 +35,9 @@
   margin: 10px 0;
 }
 
-select {
-  margin-left: 10px;
-  padding: 5px;
-}
+/* select {
+  margin-left: 12px;
+} */
 
 .generate button {
   background-color: transparent;
@@ -56,10 +53,9 @@ select {
   top: 458px;
 }
 
-
 .line-border .v1 {
   position: absolute;
-  border: 3px solid #1ED760;
+  border: 3px solid #1ed760;
   width: 0px;
   height: 207px;
   left: 960px;
@@ -68,7 +64,7 @@ select {
 
 .line-border .v2 {
   position: absolute;
-  border: 3px solid #1ED760;
+  border: 3px solid #1ed760;
   width: 0px;
   height: 521px;
   left: 960px;
@@ -77,7 +73,7 @@ select {
 
 .line-border .v3 {
   position: absolute;
-  border: 3px solid #1ED760;
+  border: 3px solid #1ed760;
   width: 0px;
   height: 282px;
   left: 960px;
@@ -90,8 +86,5 @@ select {
   height: 56.81px;
   left: 1046.8px;
   top: 489.42px;
-
-  border: 5px solid #1ED760;
+  border: 5px solid #1ed760;
 }
-
-/* Frame 1 */
