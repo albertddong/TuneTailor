@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import Title from "./components/Title";
 import Instructions from "./components/Instructions";
+import GenerateButton from "./components/GenerateButton";
 
 function App() {
   const [mood, setMood] = useState("");
@@ -306,7 +307,21 @@ function App() {
         <div class="v1"></div>
         <div class="v2"></div>
         <div class="v3"></div>
-        <div class="v4"></div>
+        <svg
+          width="67"
+          height="63"
+          viewBox="0 0 67 63"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="v4"
+        >
+          <path
+            d="M63.666 3.41562C63.666 16.3328 62.7414 29.1212 52.5023 38.6018C40.5205 49.696 23.1356 49.7071 7.90587 49.7071C2.52482 49.7071 8.63739 46.2997 10.5361 43.9791C14.8155 38.7487 9.30387 44.259 7.08759 46.317C3.09959 50.0202 0.44488 50.3799 5.86016 54.4414C8.35556 56.313 10.4635 58.8764 13.1663 60.2278"
+            stroke="#1ED760"
+            stroke-width="5"
+            stroke-linecap="round"
+          />
+        </svg>
       </div>
       <div className="left-side">
         <Title title={title} />
@@ -317,11 +332,14 @@ function App() {
           handleTempoChange={handleTempoChange}
         />
       </div>
-      <div className="generate">
-        <button onClick={handleGeneratePlaylist}>
-          <img src="spotify-icon.png" alt="Spotify" />
-        </button>
+      <div className="number3 flex flex-row gap-4 font-semibold">
+        <div>3. </div>
+        <div className="w-5/6">
+          When you're finished, click the Spotify icon in the middle of the
+          screen to generate your playlist!
+        </div>
       </div>
+      <GenerateButton handleGeneratePlaylist={handleGeneratePlaylist} />
     </div>
   );
 }

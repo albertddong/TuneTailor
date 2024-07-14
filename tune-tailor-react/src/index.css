@@ -90,3 +90,12 @@ select {
 .left-side {
   @apply pl-12 pt-4 flex flex-col gap-8;
 }
+
+.number3 {
+  position: absolute;
+  top: calc(50% - 40px);
+  left: calc(57.5%);
+  transform: translateY(-100%);
+  font-size: 30px;
+  color: white;
+}
