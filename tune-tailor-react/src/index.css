@@ -74,7 +74,7 @@ select {
 }
 
 .textarea {
-  @apply mt-4 text-black p-2 font-normal text-base w-3/4 h-28 rounded-xl;
+  @apply mt-4 text-black p-4 font-normal text-lg w-full h-80 rounded-xl;
   outline: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   resize: none;

@@ -59,29 +59,30 @@
 
 .line-border .v1 {
   position: absolute;
-  border: 3px solid #1ed760;
-  width: 0px;
+  border: 2px solid #1ed760;
   height: 207px;
   left: 960px;
   top: 242px;
+  /* @apply left-1/2; */
 }
 
 .line-border .v2 {
   position: absolute;
-  border: 3px solid #1ed760;
+  border: 2px solid #1ed760;
   width: 0px;
-  height: 521px;
   left: 960px;
   top: 630px;
+  height: auto; 
 }
 
 .line-border .v3 {
   position: absolute;
-  border: 3px solid #1ed760;
-  width: 0px;
-  height: 282px;
+  border: 2px solid #1ed760;
+  height: 175px;
+
+  /* @apply left-1/2; */
   left: 960px;
-  top: -107px;
+  /* top: -107px; */
 }
 
 .line-border .v4 {
@@ -90,4 +91,9 @@
   height: 56.81px;
   left: 1046.8px;
   top: 489.42px;
+}
+
+.loadpage {
+  transform: scale(0.8);
+  transform-origin: top left;
 }
