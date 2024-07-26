@@ -2,7 +2,7 @@ from datetime import datetime
 import logging
 from flask import Flask, request, jsonify, redirect, session
 import requests
-from app.playlist import get_playlist_for_user_input
+from server.playlist import get_playlist_for_user_input
 from dotenv import load_dotenv
 import urllib.parse
 import os
