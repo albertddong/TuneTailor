@@ -1,0 +1,99 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+.App {
+  /* font-family: Arial, sans-serif; */
+  font-family: "Inter", sans-serif;
+  position: relative;
+  background: #1e1e1e;
+}
+
+.App-header {
+  padding: 20px;
+  color: white;
+  position: relative;
+  width: 1072px;
+  height: 263px;
+  left: 111px;
+  top: 81px;
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 50px;
+  line-height: 100%;
+  z-index: 1;
+}
+
+.options {
+  margin-bottom: 20px;
+}
+
+.manual-selection label,
+.ai-selection {
+  display: block;
+  margin: 10px 0;
+}
+
+/* select {
+  margin-left: 12px;
+} */
+
+.generate button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  width: 161px;
+  height: 161px;
+  left: 880px;
+  top: 458px;
+  transition: transform 0.3s ease;
+}
+
+.generate button:hover {
+  transform: scale(1.1);
+}
+
+.generate img {
+  width: 100%;
+  height: 100%;
+}
+
+.line-border .v1 {
+  position: absolute;
+  border: 2px solid #1ed760;
+  height: 207px;
+  left: 960px;
+  top: 242px;
+  /* @apply left-1/2; */
+}
+
+.line-border .v2 {
+  position: absolute;
+  border: 2px solid #1ed760;
+  width: 0px;
+  left: 960px;
+  top: 630px;
+  height: auto; 
+}
+
+.line-border .v3 {
+  position: absolute;
+  border: 2px solid #1ed760;
+  height: 175px;
+
+  /* @apply left-1/2; */
+  left: 960px;
+  /* top: -107px; */
+}
+
+.line-border .v4 {
+  position: absolute;
+  width: 60.86px;
+  height: 56.81px;
+  left: 1046.8px;
+  top: 489.42px;
+}
+
+.loadpage {
+  transform: scale(0.8);
+  transform-origin: top left;
+}
