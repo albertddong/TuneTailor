@@ -1,29 +1,27 @@
-from datetime import datetime
+from flask import Flask, jsonify, redirect, session, request
+from flask_cors import CORS
 import logging
-from flask import Flask, request, jsonify, redirect, session
 import requests
 from server.playlist import get_playlist_for_user_input
 from dotenv import load_dotenv
 import urllib.parse
 import os
+from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Replace with your own secret key
-load_dotenv()
+app.logger.setLevel(logging.DEBUG)
+CORS(app)  # This will allow requests from any origin
 
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 AUTH_URL = 'https://accounts.spotify.com/authorize'
-TOKEN_URL = 'https://accounts.spotify.com/api/token'
 REDIRECT_URI = 'http://localhost:3000'
-API_BASE_URL = 'https://api.spotify.com/v1/'
+TOKEN_URL = 'https://accounts.spotify.com/api/token'
 
-@app.route('/getPlaylist', methods=['POST'])
-def get_playlist():
-    data = request.json
-    user_input = data.get('input')
-    playlist = get_playlist_for_user_input(user_input)
-    return jsonify(playlist)
+@app.route('/test', methods=['GET'])
+def test():
+    app.logger.debug("test function called")
+    return jsonify({'message': 'Test route is working'})
 
 @app.route('/')
 def index():
@@ -31,6 +29,7 @@ def index():
 
 @app.route('/login')
 def login():
+    app.logger.debug("login function called")
     scope = 'user-read-private user-read-email playlist-modify-private playlist-modify-public'
 
     params = {
@@ -45,9 +44,19 @@ def login():
 
     return redirect(auth_url)
 
+@app.route('/getPlaylist', methods=['GET'])
+def get_playlist():
+    app.logger.debug("playlist function called")
+    mood = request.args.get('mood')
+    tempo = request.args.get('tempo')
+    user_input = f"Mood: {mood}, Tempo: {tempo}"
+    
+    playlist_url = get_playlist_for_user_input(user_input)
+    return jsonify({'url': playlist_url})
+
 @app.route('/callback')
 def callback():
-    logging.debug("callback function called")
+    app.logger.debug("callback function called")
     if 'error' in request.args:
         return jsonify({"error": request.args['error']})
 
@@ -67,24 +76,7 @@ def callback():
         session['refresh_token'] = token_info['refresh_token']
         session['expires_at'] = datetime.now().timestamp() + token_info['expires_in']
 
-        return redirect('/playlists')
-
-# @app.route('/playlists')
-# def get_playlists():
-#     if 'access_token' not in session:
-#         return redirect('/login')
-    
-#     if datetime.now().timestamp() > session['expires_at']:
-#         return redirect('/refresh-token')
-    
-#     headers = {
-#         'Authorization': f"Bearer {session['access_token']}"
-#     }
-
-#     response = requests.get(API_BASE_URL + 'me/playlists', headers=headers)
-#     playlists = response.json()
-
-#     return jsonify(playlists)
+        return redirect('/test')
 
 @app.route('/refresh-token')
 def refresh_token():
@@ -102,10 +94,11 @@ def refresh_token():
         response = requests.post(TOKEN_URL, data=req_body)
         new_token_info = response.json()
 
-        session['access_token'] = new_token_info['acces_token']
+        session['access_token'] = new_token_info['access_token']
         session['expires_at'] = datetime.now().timestamp() + new_token_info['expires_in']
 
-        return redirect('/playlists')
+        return redirect('/testing')
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
+

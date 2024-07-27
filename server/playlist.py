@@ -22,17 +22,14 @@ def get_playlist_for_user_input(input_text):
         tracks = get_recommended_songs_by_genre_and_tempo(token, genre, tempo) if tempo else get_recommended_songs_by_genre_and_tempo(token, genre, 100)
         playlist = [{"name": track["name"], "artist": track["artists"][0]["name"]} for track in tracks]
         
-        # this requires user_id to be passed for this function... or refactor this function
-        # to just give tracks
-        # playlist_id = create_empty_playlist(user_id, "Your Playlist Name")
-        # if playlist_id:
-        #     add_tracks_to_playlist(user_id, playlist_id, tracks)
-        # return playlist_id
-        return playlist
+        # Generate playlist URL logic
+        playlist_url = "https://open.spotify.com/embed/playlist/" + "your_generated_playlist_id"
+        
+        return playlist_url
     
     except Exception as e:
         print(f"Error occurred: {str(e)}")
-        return [] 
+        return None
 
 def create_empty_playlist(user_id, playlist_name):
     try:

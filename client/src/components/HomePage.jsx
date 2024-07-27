@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Title from "./Title";
 import Instructions from "./Instructions";
 import GenerateButton from "./GenerateButton";
@@ -9,12 +9,32 @@ const HomePage = () => {
   const [tempo, setTempo] = useState("");
   const [title, setTitle] = useState("TuneTailor AI");
   const navigate = useNavigate();
+  const [responseData, setResponseData] = useState(null);
 
   const handleMoodChange = (e) => setMood(e.target.value);
   const handleTempoChange = (e) => setTempo(e.target.value);
-  const handleGeneratePlaylist = () => {
-    console.log("Generate playlist with mood:", mood, "and tempo:", tempo);
-    navigate("/second");
+
+  const handleTestRoute = async () => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:5000/getPlaylist?mood=${encodeURIComponent(
+          mood
+        )}&tempo=${encodeURIComponent(tempo)}`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      setResponseData(data);
+      console.log("Response from /getPlaylist:", data);
+    } catch (error) {
+      console.error("Error fetching /getPlaylist:", error);
+    }
   };
 
   return (
@@ -55,7 +75,7 @@ const HomePage = () => {
           screen to generate your playlist!
         </div>
       </div>
-      <GenerateButton onClick={handleGeneratePlaylist} />
+      <GenerateButton onClick={handleTestRoute} />
     </>
   );
 };

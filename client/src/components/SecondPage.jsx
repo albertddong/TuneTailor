@@ -1,36 +1,38 @@
-import React, { useState } from "react";
+import React from "react";
+import { useLocation } from "react-router-dom";
 import Title from "./Title";
 import Instructions from "./Instructions";
 import GenerateButton from "./GenerateButton";
 
 const SecondPage = () => {
-  const [mood, setMood] = useState("");
-  const [tempo, setTempo] = useState("");
-  const [title, setTitle] = useState("TuneTailor AI");
+  const location = useLocation();
+  const { playlist } = location.state || { playlist: [] };
 
-  const handleMoodChange = (e) => setMood(e.target.value);
-  const handleTempoChange = (e) => setTempo(e.target.value);
-  const handleGeneratePlaylist = () => {
-    console.log("Generate playlist with mood:", mood, "and tempo:", tempo);
-    setTitle("Poop");
-  };
   return (
     <div className="loadpage">
-      <div class="line-border w-full">
-        <div class="v1"></div>
-        <div class="v2"></div>
-        <div class="v3"></div>
+      <div className="line-border w-full">
+        <div className="v1"></div>
+        <div className="v2"></div>
+        <div className="v3"></div>
       </div>
       <div className="left-side">
-        <Title title={title} />
+        <Title title="Generated Playlist" />
         <Instructions
-          mood={mood}
-          tempo={tempo}
-          handleMoodChange={handleMoodChange}
-          handleTempoChange={handleTempoChange}
+          mood={""}
+          tempo={""}
+          handleMoodChange={() => {}}
+          handleTempoChange={() => {}}
         />
       </div>
-      <GenerateButton handleGeneratePlaylist={handleGeneratePlaylist} />
+      <div className="right-side">
+        <iframe
+          src={`https://open.spotify.com/embed/playlist/${playlist}`}
+          width="300"
+          height="380"
+          frameBorder="0"
+          allow="encrypted-media"
+        ></iframe>
+      </div>
     </div>
   );
 };
