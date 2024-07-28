@@ -11,6 +11,7 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [responseData, setResponseData] = useState(null);
   const [accessToken, setAccessToken] = useState("");
+  const [exampleURL, setExampleURL] = useState("");
 
   useEffect(() => {
     const fetchAccessToken = async () => {
@@ -19,32 +20,25 @@ const HomePage = () => {
         const token = urlParams.get("access_token");
         if (token) {
           setAccessToken(token);
-          localStorage.setItem("access_token", token);
           window.history.replaceState(null, null, window.location.pathname); // Clean up URL
+          console.log(token);
         } else {
-          const storedToken = localStorage.getItem("access_token");
-          if (storedToken) {
-            console.log("BURH")
-            console.log(storedToken)
-            setAccessToken(storedToken);
+          const response = await fetch("http://localhost:5000/", {
+            method: "GET",
+            credentials: "include",
+          });
+
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+
+          const data = await response.json();
+          if (data.auth_url) {
+            // Redirect to Spotify authentication URL
+            window.location.href = data.auth_url;
           } else {
-            const response = await fetch("http://localhost:5000/", {
-              method: "GET",
-              credentials: "include",
-            });
-
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-
-            const data = await response.json();
-            if (data.auth_url) {
-              // Redirect to Spotify authentication URL
-              window.location.href = data.auth_url;
-            } else {
-              setResponseData(data);
-              console.log("Response from /get_playlists:", data);
-            }
+            setResponseData(data);
+            console.log("Response from server:", data);
           }
         }
       } catch (error) {
@@ -58,37 +52,13 @@ const HomePage = () => {
   const handleMoodChange = (e) => setMood(e.target.value);
   const handleTempoChange = (e) => setTempo(e.target.value);
 
-  const handleGetPlaylist = async () => {
+  const handleGetPlaylists = async () => {
     try {
-      const response = await fetch(
-        `http://127.0.0.1:5000/getPlaylist?mood=${encodeURIComponent(
-          mood
-        )}&tempo=${encodeURIComponent(tempo)}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-      setResponseData(data);
-      console.log("Response from /getPlaylist:", data);
-    } catch (error) {
-      console.error("Error fetching /getPlaylist:", error);
-    }
-  };
-
-  const handleTestRoute = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/", {
+      const response = await fetch("http://localhost:5000/get_playlists", {
         method: "GET",
-        credentials: "include", // Ensure cookies are included
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
 
       if (!response.ok) {
@@ -96,17 +66,69 @@ const HomePage = () => {
       }
 
       const data = await response.json();
-      if (data.auth_url) {
-        // Redirect to Spotify authentication URL
-        window.location.href = data.auth_url;
-      } else {
-        setResponseData(data);
-        console.log("Response from /get_playlists:", data);
+      setResponseData(data);
+      console.log("Response from /get_playlists:", data);
+      if (data["playlists"].length > 0) {
+        const playlistURL = data.playlists[0][1];
+        const playlistID = playlistURL.split("/").pop();
+        console.log(playlistID)
+        setExampleURL(`https://open.spotify.com/embed/playlist/${playlistID}`);
+        console.log(exampleURL)
       }
     } catch (error) {
       console.error("Error fetching /get_playlists:", error);
     }
   };
+
+  // const handleGetPlaylist = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `http://127.0.0.1:5000/getPlaylist?mood=${encodeURIComponent(
+  //         mood
+  //       )}&tempo=${encodeURIComponent(tempo)}`,
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           Authorization: `Bearer ${accessToken}`,
+  //         },
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
+
+  //     const data = await response.json();
+  //     setResponseData(data);
+  //     console.log("Response from /getPlaylist:", data);
+  //   } catch (error) {
+  //     console.error("Error fetching /getPlaylist:", error);
+  //   }
+  // };
+
+  // const handleTestRoute = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:5000/", {
+  //       method: "GET",
+  //       credentials: "include", // Ensure cookies are included
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
+
+  //     const data = await response.json();
+  //     if (data.auth_url) {
+  //       // Redirect to Spotify authentication URL
+  //       window.location.href = data.auth_url;
+  //     } else {
+  //       setResponseData(data);
+  //       console.log("Response from /get_playlists:", data);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching /get_playlists:", error);
+  //   }
+  // };
 
   return (
     <>
@@ -146,7 +168,17 @@ const HomePage = () => {
           screen to generate your playlist!
         </div>
       </div>
-      <GenerateButton onClick={handleTestRoute} />
+      <GenerateButton onClick={handleGetPlaylists} />
+
+      {exampleURL && (
+          <iframe
+            src={exampleURL}
+            width="300"
+            height="380"
+            style={{ border: "none" }}
+            allow="encrypted-media"
+          ></iframe>
+      )}
     </>
   );
 };

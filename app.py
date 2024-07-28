@@ -48,8 +48,8 @@ def index():
         auth_url = sp_oauth.get_authorize_url()
         app.logger.debug(f"Sending Spotify auth URL to client: {auth_url}")
         return jsonify({"auth_url": auth_url})
-    app.logger.debug("User is authenticated, redirecting to callback")
-    return redirect(url_for('callback'))
+    app.logger.debug("User is authenticated, redirecting to website")
+    return jsonify({"status": "authenticated"})
 
 @app.route('/callback')
 def callback():
@@ -96,23 +96,42 @@ def callback():
 #     frontend_redirect_url = f"http://localhost:3000?access_token={access_token}"
 #     return redirect(frontend_redirect_url)
 
+# @app.route('/get_playlists')
+# def get_playlists():
+#     app.logger.debug("get_playlists function called")
+#     token_info = cache_handler.get_cached_token()
+#     if not token_info or not sp_oauth.validate_token(token_info):
+#         app.logger.debug("User is not authenticated, redirecting to Spotify auth URL")
+#         auth_url = sp_oauth.get_authorize_url()
+#         app.logger.debug(auth_url)
+#         return redirect(auth_url)
+    
+#     sp = Spotify(auth=token_info['access_token'])
+#     playlists = sp.current_user_playlists()
+#     playlists_info = [(pl['name'], pl['external_urls']['spotify']) for pl in playlists['items']]
+#     playlists_html = '<br>'.join([f'{name}: {url}' for name, url in playlists_info])
+    
+#     app.logger.debug(f"Retrieved playlists: {playlists_info}")
+#     return playlists_html
 @app.route('/get_playlists')
 def get_playlists():
     app.logger.debug("get_playlists function called")
-    token_info = cache_handler.get_cached_token()
-    if not token_info or not sp_oauth.validate_token(token_info):
-        app.logger.debug("User is not authenticated, redirecting to Spotify auth URL")
-        auth_url = sp_oauth.get_authorize_url()
-        app.logger.debug(auth_url)
-        return redirect(auth_url)
     
-    sp = Spotify(auth=token_info['access_token'])
-    playlists = sp.current_user_playlists()
-    playlists_info = [(pl['name'], pl['external_urls']['spotify']) for pl in playlists['items']]
-    playlists_html = '<br>'.join([f'{name}: {url}' for name, url in playlists_info])
+    access_token = request.headers.get('Authorization').split(" ")[1]
+    if not access_token:
+        app.logger.debug("Access token not provided")
+        return jsonify({"error": "Access token is required"}), 400
     
-    app.logger.debug(f"Retrieved playlists: {playlists_info}")
-    return playlists_html
+    sp = Spotify(auth=access_token)
+    try:
+        playlists = sp.current_user_playlists()
+        playlists_info = [(pl['name'], pl['external_urls']['spotify']) for pl in playlists['items']]
+        app.logger.debug(f"Retrieved playlists: {playlists_info}")
+        app.logger.debug(playlists_info[0][1])
+        return jsonify({"playlists": playlists_info})
+    except Exception as e:
+        app.logger.error(f"Error fetching playlists: {str(e)}")
+        return jsonify({"error": "Failed to fetch playlists"}), 500
 
 @app.route('/logout')
 def logout():
