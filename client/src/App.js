@@ -9,6 +9,7 @@ import "./App.css";
 import HomePage from "./components/HomePage";
 import SecondPage from "./components/SecondPage";
 
+
 const App = () => {
   const adjustV2Height = () => {
     const v2Element = document.querySelector(".line-border .v2");
