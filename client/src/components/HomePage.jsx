@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Title from "./Title";
 import Instructions from "./Instructions";
@@ -10,11 +10,55 @@ const HomePage = () => {
   const [title, setTitle] = useState("TuneTailor AI");
   const navigate = useNavigate();
   const [responseData, setResponseData] = useState(null);
+  const [accessToken, setAccessToken] = useState("");
+
+  useEffect(() => {
+    const fetchAccessToken = async () => {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get("access_token");
+        if (token) {
+          setAccessToken(token);
+          localStorage.setItem("access_token", token);
+          window.history.replaceState(null, null, window.location.pathname); // Clean up URL
+        } else {
+          const storedToken = localStorage.getItem("access_token");
+          if (storedToken) {
+            console.log("BURH")
+            console.log(storedToken)
+            setAccessToken(storedToken);
+          } else {
+            const response = await fetch("http://localhost:5000/", {
+              method: "GET",
+              credentials: "include",
+            });
+
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+
+            const data = await response.json();
+            if (data.auth_url) {
+              // Redirect to Spotify authentication URL
+              window.location.href = data.auth_url;
+            } else {
+              setResponseData(data);
+              console.log("Response from /get_playlists:", data);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching access token:", error);
+      }
+    };
+
+    fetchAccessToken();
+  }, []);
 
   const handleMoodChange = (e) => setMood(e.target.value);
   const handleTempoChange = (e) => setTempo(e.target.value);
 
-  const handleTestRoute = async () => {
+  const handleGetPlaylist = async () => {
     try {
       const response = await fetch(
         `http://127.0.0.1:5000/getPlaylist?mood=${encodeURIComponent(
@@ -22,6 +66,9 @@ const HomePage = () => {
         )}&tempo=${encodeURIComponent(tempo)}`,
         {
           method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
       );
 
@@ -34,6 +81,30 @@ const HomePage = () => {
       console.log("Response from /getPlaylist:", data);
     } catch (error) {
       console.error("Error fetching /getPlaylist:", error);
+    }
+  };
+
+  const handleTestRoute = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/", {
+        method: "GET",
+        credentials: "include", // Ensure cookies are included
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      if (data.auth_url) {
+        // Redirect to Spotify authentication URL
+        window.location.href = data.auth_url;
+      } else {
+        setResponseData(data);
+        console.log("Response from /get_playlists:", data);
+      }
+    } catch (error) {
+      console.error("Error fetching /get_playlists:", error);
     }
   };
 
