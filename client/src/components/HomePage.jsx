@@ -52,13 +52,46 @@ const HomePage = () => {
   const handleMoodChange = (e) => setMood(e.target.value);
   const handleTempoChange = (e) => setTempo(e.target.value);
 
-  const handleGetPlaylists = async () => {
+  // const handleGetPlaylists = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:5000/get_playlists", {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
+
+  //     const data = await response.json();
+  //     setResponseData(data);
+  //     console.log("Response from /get_playlists:", data);
+  //     if (data["playlists"].length > 0) {
+  //       const playlistURL = data.playlists[0][1];
+  //       const playlistID = playlistURL.split("/").pop();
+  //       console.log(playlistID)
+  //       setExampleURL(`https://open.spotify.com/embed/playlist/${playlistID}`);
+  //       console.log(exampleURL)
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching /get_playlists:", error);
+  //   }
+  // };
+
+  const handleCreatePlaylist = async () => {
     try {
-      const response = await fetch("http://localhost:5000/get_playlists", {
-        method: "GET",
+      const response = await fetch("http://localhost:5000/create_playlist", {
+        method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
+        body: JSON.stringify({
+          user_input: `Mood: ${mood}, Tempo: ${tempo}`, // Combine mood and tempo into a single input
+          playlist_name: "New Playlist",
+        }),
       });
 
       if (!response.ok) {
@@ -67,68 +100,14 @@ const HomePage = () => {
 
       const data = await response.json();
       setResponseData(data);
-      console.log("Response from /get_playlists:", data);
-      if (data["playlists"].length > 0) {
-        const playlistURL = data.playlists[0][1];
-        const playlistID = playlistURL.split("/").pop();
-        console.log(playlistID)
-        setExampleURL(`https://open.spotify.com/embed/playlist/${playlistID}`);
-        console.log(exampleURL)
+      console.log("Response from /create_playlist:", data);
+      if (data.playlist_url) {
+        setExampleURL(data.playlist_url);
       }
     } catch (error) {
-      console.error("Error fetching /get_playlists:", error);
+      console.error("Error creating playlist:", error);
     }
   };
-
-  // const handleGetPlaylist = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       `http://127.0.0.1:5000/getPlaylist?mood=${encodeURIComponent(
-  //         mood
-  //       )}&tempo=${encodeURIComponent(tempo)}`,
-  //       {
-  //         method: "GET",
-  //         headers: {
-  //           Authorization: `Bearer ${accessToken}`,
-  //         },
-  //       }
-  //     );
-
-  //     if (!response.ok) {
-  //       throw new Error("Network response was not ok");
-  //     }
-
-  //     const data = await response.json();
-  //     setResponseData(data);
-  //     console.log("Response from /getPlaylist:", data);
-  //   } catch (error) {
-  //     console.error("Error fetching /getPlaylist:", error);
-  //   }
-  // };
-
-  // const handleTestRoute = async () => {
-  //   try {
-  //     const response = await fetch("http://localhost:5000/", {
-  //       method: "GET",
-  //       credentials: "include", // Ensure cookies are included
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Network response was not ok");
-  //     }
-
-  //     const data = await response.json();
-  //     if (data.auth_url) {
-  //       // Redirect to Spotify authentication URL
-  //       window.location.href = data.auth_url;
-  //     } else {
-  //       setResponseData(data);
-  //       console.log("Response from /get_playlists:", data);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching /get_playlists:", error);
-  //   }
-  // };
 
   return (
     <>
@@ -168,13 +147,13 @@ const HomePage = () => {
           screen to generate your playlist!
         </div>
       </div>
-      <GenerateButton onClick={handleGetPlaylists} />
+      <GenerateButton onClick={handleCreatePlaylist} />
 
       {exampleURL && (
           <iframe
             src={exampleURL}
-            width="300"
-            height="380"
+            width="600"
+            height="600"
             style={{ border: "none" }}
             allow="encrypted-media"
           ></iframe>

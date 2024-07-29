@@ -10,6 +10,8 @@ from spotipy.oauth2 import SpotifyOAuth
 from spotipy.cache_handler import FlaskSessionCacheHandler
 from dotenv import load_dotenv
 
+from server.playlist import create_empty_playlist, get_playlist_for_user_input, add_tracks_to_playlist
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)
 app.logger.setLevel(logging.DEBUG)
@@ -75,44 +77,6 @@ def callback():
         app.logger.error(f"Error during redirect: {e}")
         return jsonify({"error": "Failed to redirect to frontend"}), 500
 
-# def callback():
-#     app.logger.debug("callback function called")
-#     auth_code = request.args.get('code')
-#     if not auth_code:
-#         app.logger.error("Authorization code is missing in the request")
-#         return jsonify({"error": "Authorization code is missing"}), 400
-    
-#     app.logger.debug(f"Authorization code received: {auth_code}")
-#     try:
-#         token_info = sp_oauth.get_access_token(auth_code)
-#         app.logger.debug(f"Access token obtained: {token_info}")
-#         cache_handler.save_token_to_cache(token_info)
-#         access_token = token_info['access_token']
-#     except Exception as e:
-#         app.logger.error(f"Error obtaining access token: {e}")
-#         return jsonify({"error": "Failed to obtain access token"}), 500
-
-#     # Redirect back to the frontend with the access token as a query parameter
-#     frontend_redirect_url = f"http://localhost:3000?access_token={access_token}"
-#     return redirect(frontend_redirect_url)
-
-# @app.route('/get_playlists')
-# def get_playlists():
-#     app.logger.debug("get_playlists function called")
-#     token_info = cache_handler.get_cached_token()
-#     if not token_info or not sp_oauth.validate_token(token_info):
-#         app.logger.debug("User is not authenticated, redirecting to Spotify auth URL")
-#         auth_url = sp_oauth.get_authorize_url()
-#         app.logger.debug(auth_url)
-#         return redirect(auth_url)
-    
-#     sp = Spotify(auth=token_info['access_token'])
-#     playlists = sp.current_user_playlists()
-#     playlists_info = [(pl['name'], pl['external_urls']['spotify']) for pl in playlists['items']]
-#     playlists_html = '<br>'.join([f'{name}: {url}' for name, url in playlists_info])
-    
-#     app.logger.debug(f"Retrieved playlists: {playlists_info}")
-#     return playlists_html
 @app.route('/get_playlists')
 def get_playlists():
     app.logger.debug("get_playlists function called")
@@ -132,6 +96,33 @@ def get_playlists():
     except Exception as e:
         app.logger.error(f"Error fetching playlists: {str(e)}")
         return jsonify({"error": "Failed to fetch playlists"}), 500
+
+@app.route('/create_playlist', methods=['POST'])
+def create_playlist():
+    try:
+        auth_header = request.headers.get('Authorization')
+        app.logger.info(f"Authorization Header: {auth_header}")
+
+        if not auth_header:
+            return jsonify({"error": "Authorization header is required"}), 401
+
+        access_token = auth_header.split(" ")[1]
+        app.logger.info(f"Access Token: {access_token}")
+
+        data = request.json
+        # input_text = data.get('input_text')
+        # if not input_text:
+        #     return jsonify({"error": "Input text is required"}), 400
+
+        playlist_url = get_playlist_for_user_input("i want some happy and fast music", access_token)
+        if playlist_url:
+            return jsonify({"playlist_url": playlist_url})
+        else:
+            return jsonify({"error": "Failed to create playlist"}), 500
+    
+    except Exception as e:
+        app.logger.error(f"Error occurred: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/logout')
 def logout():
