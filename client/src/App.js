@@ -1,14 +1,8 @@
 import React, { useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import HomePage from "./components/HomePage";
 import SecondPage from "./components/SecondPage";
-
 
 const App = () => {
   const adjustV2Height = () => {
@@ -31,14 +25,7 @@ const App = () => {
       <div className="App min-h-screen min-w-screen relative">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route
-            path="/second"
-            element={
-              <div className="loadpage">
-                <SecondPage />
-              </div>
-            }
-          />
+          <Route path="/secondpage" element={<SecondPage />} />
         </Routes>
       </div>
     </Router>
