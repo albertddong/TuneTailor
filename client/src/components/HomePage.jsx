@@ -52,34 +52,6 @@ const HomePage = () => {
   const handleMoodChange = (e) => setMood(e.target.value);
   const handleTempoChange = (e) => setTempo(e.target.value);
 
-  // const handleGetPlaylists = async () => {
-  //   try {
-  //     const response = await fetch("http://localhost:5000/get_playlists", {
-  //       method: "GET",
-  //       headers: {
-  //         Authorization: `Bearer ${accessToken}`,
-  //       },
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Network response was not ok");
-  //     }
-
-  //     const data = await response.json();
-  //     setResponseData(data);
-  //     console.log("Response from /get_playlists:", data);
-  //     if (data["playlists"].length > 0) {
-  //       const playlistURL = data.playlists[0][1];
-  //       const playlistID = playlistURL.split("/").pop();
-  //       console.log(playlistID)
-  //       setExampleURL(`https://open.spotify.com/embed/playlist/${playlistID}`);
-  //       console.log(exampleURL)
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching /get_playlists:", error);
-  //   }
-  // };
-
   const handleCreatePlaylist = async () => {
     try {
       const response = await fetch("http://localhost:5000/create_playlist", {
@@ -103,6 +75,7 @@ const HomePage = () => {
       console.log("Response from /create_playlist:", data);
       if (data.playlist_url) {
         setExampleURL(data.playlist_url);
+        navigate("/secondpage", { state: { playlist: data.playlist_url } }); // Navigate to SecondPage with playlist URL
       }
     } catch (error) {
       console.error("Error creating playlist:", error);
@@ -148,18 +121,36 @@ const HomePage = () => {
         </div>
       </div>
       <GenerateButton onClick={handleCreatePlaylist} />
-
-      {exampleURL && (
-          <iframe
-            src={exampleURL}
-            width="600"
-            height="600"
-            style={{ border: "none" }}
-            allow="encrypted-media"
-          ></iframe>
-      )}
     </>
   );
 };
 
 export default HomePage;
+
+  // const handleGetPlaylists = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:5000/get_playlists", {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
+
+  //     const data = await response.json();
+  //     setResponseData(data);
+  //     console.log("Response from /get_playlists:", data);
+  //     if (data["playlists"].length > 0) {
+  //       const playlistURL = data.playlists[0][1];
+  //       const playlistID = playlistURL.split("/").pop();
+  //       console.log(playlistID)
+  //       setExampleURL(`https://open.spotify.com/embed/playlist/${playlistID}`);
+  //       console.log(exampleURL)
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching /get_playlists:", error);
+  //   }
+  // };
